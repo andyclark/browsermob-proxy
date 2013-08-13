@@ -163,7 +163,6 @@ public class ProxyServer {
         client.remapHost(source, target);
     }
 
-    @Deprecated
     public void addRequestInterceptor(HttpRequestInterceptor i) {
         client.addRequestInterceptor(i);
     }
@@ -172,7 +171,6 @@ public class ProxyServer {
         client.addRequestInterceptor(interceptor);
     }
 
-    @Deprecated
     public void addResponseInterceptor(HttpResponseInterceptor i) {
         client.addResponseInterceptor(i);
     }

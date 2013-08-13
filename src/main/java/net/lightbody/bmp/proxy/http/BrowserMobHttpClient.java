@@ -196,7 +196,6 @@ public class BrowserMobHttpClient {
         hostNameResolver.remap(source, target);
     }
 
-    @Deprecated
     public void addRequestInterceptor(HttpRequestInterceptor i) {
         httpClient.addRequestInterceptor(i);
     }
@@ -205,7 +204,6 @@ public class BrowserMobHttpClient {
         requestInterceptors.add(interceptor);
     }
 
-    @Deprecated
     public void addResponseInterceptor(HttpResponseInterceptor i) {
         httpClient.addResponseInterceptor(i);
     }
