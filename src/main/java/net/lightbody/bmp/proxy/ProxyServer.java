@@ -179,7 +179,49 @@ public class ProxyServer {
         client.addResponseInterceptor(interceptor);
     }
 
-    public StreamManager getStreamManager() {
+    public HttpRequestInterceptor getRequestInterceptor(int index) {
+		return client.getRequestInterceptor(index);
+	}
+
+	public int getRequestInterceptorCount() {
+		return client.getRequestInterceptorCount();
+	}
+
+	public void addRequestInterceptor(HttpRequestInterceptor itcp, int index) {
+		client.addRequestInterceptor(itcp, index);
+	}
+
+	public void clearRequestInterceptors() {
+		client.clearRequestInterceptors();
+	}
+
+	public void removeRequestInterceptorByClass(
+			Class<? extends HttpRequestInterceptor> clazz) {
+		client.removeRequestInterceptorByClass(clazz);
+	}
+
+	public int getResponseInterceptorCount() {
+		return client.getResponseInterceptorCount();
+	}
+
+	public HttpResponseInterceptor getResponseInterceptor(int index) {
+		return client.getResponseInterceptor(index);
+	}
+
+	public void addResponseInterceptor(HttpResponseInterceptor itcp, int index) {
+		client.addResponseInterceptor(itcp, index);
+	}
+
+	public void clearResponseInterceptors() {
+		client.clearResponseInterceptors();
+	}
+
+	public void removeResponseInterceptorByClass(
+			Class<? extends HttpResponseInterceptor> clazz) {
+		client.removeResponseInterceptorByClass(clazz);
+	}
+
+	public StreamManager getStreamManager() {
         return streamManager;
     }
 
