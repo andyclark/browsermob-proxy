@@ -5,6 +5,8 @@ import cz.mallat.uasparser.UASparser;
 import cz.mallat.uasparser.UserAgentInfo;
 import net.lightbody.bmp.core.har.*;
 import net.lightbody.bmp.proxy.util.*;
+
+import org.apache.commons.httpclient.HttpClient;
 import org.apache.http.*;
 import org.apache.http.auth.*;
 import org.apache.http.client.CredentialsProvider;
@@ -23,6 +25,7 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.cookie.*;
 import org.apache.http.cookie.params.CookieSpecPNames;
 import org.apache.http.impl.auth.BasicScheme;
+import org.apache.http.impl.client.AbstractHttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.DefaultHttpRequestRetryHandler;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -195,17 +198,97 @@ public class BrowserMobHttpClient {
     public void remapHost(String source, String target) {
         hostNameResolver.remap(source, target);
     }
+    
+    /*
+     * Delegate to HttpClient's Http Request / Response Interceptor management
+     */
 
+	/** @see AbstractHttpClient#getRequestInterceptor(int) */
+	public HttpRequestInterceptor getRequestInterceptor(int index) {
+		return httpClient.getRequestInterceptor(index);
+	}
+
+	/** @see AbstractHttpClient#getRequestInterceptorCount() */
+    public int getRequestInterceptorCount() {
+        return httpClient.getRequestInterceptorCount();
+    }
+    
+    /** @see AbstractHttpClient#addRequestInterceptor(HttpRequestInterceptor) */
     public void addRequestInterceptor(HttpRequestInterceptor i) {
         httpClient.addRequestInterceptor(i);
     }
-
-    public void addRequestInterceptor(RequestInterceptor interceptor) {
-        requestInterceptors.add(interceptor);
+    
+    /** @see AbstractHttpClient#addRequestInterceptor(HttpRequestInterceptor, int) */
+    public void addRequestInterceptor(HttpRequestInterceptor itcp, int index) { 
+    	httpClient.addRequestInterceptor(itcp, index);
+    }
+    
+    /** @see AbstractHttpClient#clearRequestInterceptors() */
+    public void clearRequestInterceptors() {
+    	httpClient.clearRequestInterceptors();
+    }
+    
+    /** @see AbstractHttpClient#removeRequestInterceptorByClass(Class) */
+    public void removeRequestInterceptorByClass(Class<? extends HttpRequestInterceptor> clazz) {
+    	httpClient.removeRequestInterceptorByClass(clazz);
     }
 
+    /**
+     * @param i
+     * @see AbstractHttpClient#addResponseInterceptor(HttpResponseInterceptor)
+     */
     public void addResponseInterceptor(HttpResponseInterceptor i) {
         httpClient.addResponseInterceptor(i);
+    }
+
+    /**
+	 * @return
+	 * @see org.apache.http.impl.client.AbstractHttpClient#getResponseInterceptorCount()
+	 */
+	public int getResponseInterceptorCount() {
+		return httpClient.getResponseInterceptorCount();
+	}
+
+	/**
+	 * @param index
+	 * @return
+	 * @see org.apache.http.impl.client.AbstractHttpClient#getResponseInterceptor(int)
+	 */
+	public HttpResponseInterceptor getResponseInterceptor(int index) {
+		return httpClient.getResponseInterceptor(index);
+	}
+
+	/**
+	 * @param itcp
+	 * @param index
+	 * @see org.apache.http.impl.client.AbstractHttpClient#addResponseInterceptor(org.apache.http.HttpResponseInterceptor, int)
+	 */
+	public void addResponseInterceptor(HttpResponseInterceptor itcp, int index) {
+		httpClient.addResponseInterceptor(itcp, index);
+	}
+
+	/**
+	 * 
+	 * @see org.apache.http.impl.client.AbstractHttpClient#clearResponseInterceptors()
+	 */
+	public void clearResponseInterceptors() {
+		httpClient.clearResponseInterceptors();
+	}
+
+	/**
+	 * @param clazz
+	 * @see org.apache.http.impl.client.AbstractHttpClient#removeResponseInterceptorByClass(java.lang.Class)
+	 */
+	public void removeResponseInterceptorByClass(
+			Class<? extends HttpResponseInterceptor> clazz) {
+		httpClient.removeResponseInterceptorByClass(clazz);
+	}
+	
+	/*
+	 * Browsermob proxy's own request / response interceptors
+	 */
+	public void addRequestInterceptor(RequestInterceptor interceptor) {
+        requestInterceptors.add(interceptor);
     }
 
     public void addResponseInterceptor(ResponseInterceptor interceptor) {
