@@ -222,12 +222,7 @@ public class BrowserMobHttpClient {
     public void addRequestInterceptor(HttpRequestInterceptor itcp, int index) { 
     	httpClient.addRequestInterceptor(itcp, index);
     }
-    
-    /** @see AbstractHttpClient#clearRequestInterceptors() */
-    public void clearRequestInterceptors() {
-    	httpClient.clearRequestInterceptors();
-    }
-    
+      
     /** @see AbstractHttpClient#removeRequestInterceptorByClass(Class) */
     public void removeRequestInterceptorByClass(Class<? extends HttpRequestInterceptor> clazz) {
     	httpClient.removeRequestInterceptorByClass(clazz);
@@ -265,14 +260,6 @@ public class BrowserMobHttpClient {
 	 */
 	public void addResponseInterceptor(HttpResponseInterceptor itcp, int index) {
 		httpClient.addResponseInterceptor(itcp, index);
-	}
-
-	/**
-	 * 
-	 * @see org.apache.http.impl.client.AbstractHttpClient#clearResponseInterceptors()
-	 */
-	public void clearResponseInterceptors() {
-		httpClient.clearResponseInterceptors();
 	}
 
 	/**

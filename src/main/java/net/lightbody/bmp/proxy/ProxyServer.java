@@ -191,10 +191,6 @@ public class ProxyServer {
 		client.addRequestInterceptor(itcp, index);
 	}
 
-	public void clearRequestInterceptors() {
-		client.clearRequestInterceptors();
-	}
-
 	public void removeRequestInterceptorByClass(
 			Class<? extends HttpRequestInterceptor> clazz) {
 		client.removeRequestInterceptorByClass(clazz);
@@ -210,10 +206,6 @@ public class ProxyServer {
 
 	public void addResponseInterceptor(HttpResponseInterceptor itcp, int index) {
 		client.addResponseInterceptor(itcp, index);
-	}
-
-	public void clearResponseInterceptors() {
-		client.clearResponseInterceptors();
 	}
 
 	public void removeResponseInterceptorByClass(
