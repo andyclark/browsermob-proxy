@@ -371,6 +371,10 @@ public class BrowserMobProxyHandler extends SeleniumProxyHandler {
                 if (relay.getHttpServer() != null && relay.isStarted()) {
                     relay.getHttpServer().removeListener(relay);
                 }
+                try {
+					relay.stop();
+				} catch (InterruptedException ignore) {
+				}
             }
 
             sslRelays.clear();
