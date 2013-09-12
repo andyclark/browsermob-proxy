@@ -103,6 +103,20 @@ public class ProxyServer {
         this.port = port;
     }
 
+	/**
+	 * Return the {@link Har} as it currently stands, without waiting for any
+	 * requests to complete.
+	 * <p>
+	 * Useful if you don't care about complete HAR records, but do want to see
+	 * what's happening at a point in time
+	 * <p>
+	 * 
+	 * @return the current {@link Har}ar instance.
+	 */
+    public Har getHarNow() {
+    	return client.getHar();
+    }
+    
     public Har getHar() {
         // Wait up to 5 seconds for all active requests to cease before returning the HAR.
         // This helps with race conditions but won't cause deadlocks should a request hang
