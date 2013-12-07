@@ -11,6 +11,7 @@ import net.lightbody.bmp.proxy.jetty.http.SocketListener;
 import net.lightbody.bmp.proxy.jetty.jetty.Server;
 import net.lightbody.bmp.proxy.jetty.util.InetAddrPort;
 import net.lightbody.bmp.proxy.util.Log;
+
 import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponseInterceptor;
 import org.java_bandwidthlimiter.BandwidthLimiter;
@@ -18,6 +19,8 @@ import org.java_bandwidthlimiter.StreamManager;
 import org.openqa.selenium.Proxy;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Map;
@@ -31,6 +34,7 @@ public class ProxyServer {
 
     private Server server;
     private int port = -1;
+    private InetAddress localHost;
     private BrowserMobHttpClient client;
     private StreamManager streamManager;
     private HarPage currentPage;
@@ -55,7 +59,7 @@ public class ProxyServer {
         streamManager = new StreamManager( 100 * BandwidthLimiter.OneMbps );
 
         server = new Server();
-        HttpListener listener = new SocketListener(new InetAddrPort(getPort()));
+        HttpListener listener = new SocketListener(new InetAddrPort(getLocalHost(), getPort()));
         server.addListener(listener);
         HttpContext context = new HttpContext();
         context.setContextPath("/");
@@ -78,7 +82,7 @@ public class ProxyServer {
     public org.openqa.selenium.Proxy seleniumProxy() throws UnknownHostException {
         Proxy proxy = new Proxy();
         proxy.setProxyType(Proxy.ProxyType.MANUAL);
-        String proxyStr = String.format("%s:%d", InetAddress.getLocalHost().getCanonicalHostName(),  getPort());
+        String proxyStr = String.format("%s:%d", getLocalHost().getCanonicalHostName(), getPort());
         proxy.setHttpProxy(proxyStr);
         proxy.setSslProxy(proxyStr);
 
@@ -102,6 +106,25 @@ public class ProxyServer {
     public void setPort(int port) {
         this.port = port;
     }
+  
+    public InetAddress getLocalHost() throws UnknownHostException {
+        if (localHost == null) {
+            localHost = InetAddress.getByName("0.0.0.0");
+        }
+        return localHost;
+    }
+
+    public void setLocalHost(InetAddress localHost) throws SocketException {
+        if (localHost.isAnyLocalAddress() ||
+            localHost.isLoopbackAddress() ||
+            NetworkInterface.getByInetAddress(localHost) != null)
+        {
+            this.localHost = localHost;
+        } else
+        {
+            throw new IllegalArgumentException("Must be address of a local adapter");
+        }
+    }
 
 	/**
 	 * Return the {@link Har} as it currently stands, without waiting for any
@@ -116,7 +139,7 @@ public class ProxyServer {
     public Har getHarNow() {
     	return client.getHar();
     }
-    
+
     public Har getHar() {
         // Wait up to 5 seconds for all active requests to cease before returning the HAR.
         // This helps with race conditions but won't cause deadlocks should a request hang

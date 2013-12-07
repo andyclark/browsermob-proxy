@@ -1,30 +1,30 @@
 package net.lightbody.bmp.proxy;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeThat;
-
-import java.io.IOException;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 
+import java.io.IOException;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeThat;
+
 /**
  * Tests to exercise blacklist and whitelist functionality
- * 
+ *
  * @author Andy Clark (andy.clark@realvnc.com)
- * 
+ *
  */
 public class BlackAndWhiteListTest extends DummyServerTest {
 
 	/*
 	 * Some tests were hanging when trying to GET un-whitelisted URLs.
 	 * Implementing a timeouts prevents these from blocking a test indefinitely.
-	 * 
+	 *
 	 * Applied to each test, rather with a global Timeout rule, as global
 	 * timeout rule was preventing parent's @After rule from running, and dummy
 	 * server from being shut down.
@@ -150,4 +150,8 @@ public class BlackAndWhiteListTest extends DummyServerTest {
 		}
 	}
 
+
+
+
 }
+
