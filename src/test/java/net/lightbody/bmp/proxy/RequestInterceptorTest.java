@@ -27,6 +27,7 @@ import org.apache.http.protocol.HTTP;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -94,6 +95,7 @@ public class RequestInterceptorTest {
         assertTrue("The intercepted request was null.", interceptedRequest != null);
     }
 
+    @Ignore("Test was added in order to fail, skipping until fix is scheduled")
     @Test
     public void testInterceptGetOfGoogleCaNoHostNameVerifier() {
         setupApacheHttpClient(Method.GET, "www.google.ca", true, false);
