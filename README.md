@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/v-dev/browsermob-proxy.png?branch=request-interceptor-test)](https://travis-ci.org/v-dev/browsermob-proxy)
+[![Build Status](https://travis-ci.org/andyclark/browsermob-proxy.png?branch=develop)](https://travis-ci.org/andyclark/browsermob-proxy)
 
 BrowserMob Proxy
 ================
