@@ -16,13 +16,15 @@ import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class PhantomJSTest {
-    
-    ProxyServer server;
-    
+    private final int PROXY_PORT = 4444;
+
+    private ProxyServer server;
+    private PhantomJSDriver driver;
+
     @Before
     public void startProxy() throws Exception {
         // start the proxy
-        server = new ProxyServer(4444);
+        server = new ProxyServer(PROXY_PORT);
         server.start();
         server.setCaptureHeaders(true);
         server.setCaptureContent(true);
@@ -35,6 +37,10 @@ public class PhantomJSTest {
             server.stop();
             server = null;
         }
+        if (driver != null) {
+        	driver.quit();
+        	driver = null;
+        }
     }
     
     @Test
@@ -46,30 +52,25 @@ public class PhantomJSTest {
         capabilities.setCapability(CapabilityType.PROXY, proxy);
 
         // ResolvingPhantomJSDriverService downloads PhantomJS if it's not found
-		PhantomJSDriver driver = new PhantomJSDriver(
-				ResolvingPhantomJSDriverService
-						.createDefaultService(capabilities),
-				capabilities);
+        driver = new PhantomJSDriver(
+                ResolvingPhantomJSDriverService
+                        .createDefaultService(capabilities),
+                capabilities);
         
-        try {
-            server.newHar("Yahoo");
+		server.newHar("Yahoo");
     
-            driver.get("http://us.yahoo.com");
+		driver.get("http://us.yahoo.com");
     
-            Assert.assertThat(driver.getTitle(), CoreMatchers.containsString("Yahoo"));
-            // get the HAR data
-            Har har = server.getHar();
+        Assert.assertThat(driver.getTitle(), CoreMatchers.containsString("Yahoo"));
+        // get the HAR data
+        Har har = server.getHar();
     
-            // make sure something came back in the har
-            Assert.assertTrue(!har.getLog().getEntries().isEmpty());
+        // make sure something came back in the har
+        Assert.assertTrue(!har.getLog().getEntries().isEmpty());
     
-            // show that we can capture the HTML of the root page
-            String text = har.getLog().getEntries().get(0).getResponse().getContent().getText();
-            Assert.assertTrue(text.contains("<title>Yahoo</title>"));
-        } finally {
-            driver.quit();
-        }
-
+        // show that we can capture the HTML of the root page
+        String text = har.getLog().getEntries().get(0).getResponse().getContent().getText();
+        Assert.assertTrue(text.contains("<title>Yahoo</title>"));
     }
 
     @Test
@@ -84,40 +85,36 @@ public class PhantomJSTest {
         capabilities.setCapability(CapabilityType.PROXY, proxy);
 
         // ResolvingPhantomJSDriverService downloads PhantomJS if it's not found
-		PhantomJSDriver driver = new PhantomJSDriver(
+		driver = new PhantomJSDriver(
 				ResolvingPhantomJSDriverService
 						.createDefaultService(capabilities),
 				capabilities);
 		
-        try {
-            server.newHar("Google");
-    
-            // No Country Redirect - always go to the US site
-            driver.get("https://www.google.com/ncr");
-            Assert.assertThat(driver.getTitle(), CoreMatchers.containsString("Google"));
-    
-            // get the HAR data
-            Har har = server.getHar();
-    
-            // make sure something came back in the har
-            Assert.assertTrue(!har.getLog().getEntries().isEmpty());
-    
-            // show that we can capture the HTML of the root page
-            String text = null;
-            for (HarEntry entry : har.getLog().getEntries()) {
-                // find the first proper response, and check it
-                if (entry.getResponse().getStatus() == 200) {
-                    text = entry.getResponse().getContent().getText();
-                    Assert.assertTrue(text.contains("<title>Google</title>"));
-                    // nothing left to prove
-                    return;
-                }
-                
-            }
-            Assert.fail("No normal (Status 200) response found in HAR");
-        } finally {
-            driver.quit();
-        }
+        
+        server.newHar("Google");
 
+        // No Country Redirect - always go to the US site
+        driver.get("https://www.google.com/ncr");
+        Assert.assertThat(driver.getTitle(), CoreMatchers.containsString("Google"));
+
+        // get the HAR data
+        Har har = server.getHar();
+
+        // make sure something came back in the har
+        Assert.assertTrue(!har.getLog().getEntries().isEmpty());
+
+        // show that we can capture the HTML of the root page
+        String text = null;
+        for (HarEntry entry : har.getLog().getEntries()) {
+            // find the first proper response, and check it
+            if (entry.getResponse().getStatus() == 200) {
+                text = entry.getResponse().getContent().getText();
+                Assert.assertTrue(text.contains("<title>Google</title>"));
+                // nothing left to prove
+                return;
+            }
+            
+        }
+        Assert.fail("No normal (Status 200) response found in HAR");
     }
 }
